@@ -1,0 +1,41 @@
+﻿@model EstudiosAvanzados.Models.Estudiantes
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalle del estudiante <span>@Html.DisplayFor(model => model.Nombre)</span></h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaNacimiento)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaNacimiento)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Curso)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Curso)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Estado)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">Editar</a> |
+    <a asp-action="Index" class="btn btn-primary">Volver</a>
+</div>
