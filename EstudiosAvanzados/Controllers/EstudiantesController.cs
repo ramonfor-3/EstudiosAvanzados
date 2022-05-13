@@ -27,7 +27,9 @@ namespace EstudiosAvanzados.Controllers
         // GET: Estudiantes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Estudiantes.ToListAsync());
+            return View(await _context.Estudiantes.Where(
+                w => w.Estado == Enum.GetName(typeof(Estado), Estado.Activo)
+            ).ToListAsync());
         }
 
         // GET: Estudiantes/Details/5
@@ -54,6 +56,16 @@ namespace EstudiosAvanzados.Controllers
             return View();
         }
 
+        private int Age(DateTime birthDate)
+        {
+            var today = DateTime.Today;
+
+            if (birthDate > today)
+                return 0;
+            else
+                return new DateTime((today - birthDate).Ticks).Year - 1;
+        }
+
         // POST: Estudiantes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -63,7 +75,15 @@ namespace EstudiosAvanzados.Controllers
         {
             if (ModelState.IsValid)
             {
+                var edad = Age(estudiantes.FechaNacimiento);
 
+                if(edad < 16)
+                {
+                    this.ModelState.AddModelError("FechaNacimiento", "Estudiante debe tener minimo 16 años");
+                    return View();
+                }
+
+                estudiantes.Estado = "Activo";
                 _context.Add(estudiantes);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -101,6 +121,13 @@ namespace EstudiosAvanzados.Controllers
 
             if (ModelState.IsValid)
             {
+                var edad = Age(estudiantes.FechaNacimiento);
+
+                if (edad < 16)
+                {
+                    this.ModelState.AddModelError("FechaNacimiento", "Estudiante debe tener minimo 16 años");
+                    return View();
+                }
                 try
                 {
                     _context.Update(estudiantes);
@@ -147,7 +174,7 @@ namespace EstudiosAvanzados.Controllers
         {
             var estudiantes = await _context.Estudiantes.FindAsync(id);
             //_context.Estudiantes.Remove(estudiantes);
-            if (estudiantes.Estado == Enum.GetName(typeof(Estado), Estado.Activo))
+            if (estudiantes.Estado.Trim() == Enum.GetName(typeof(Estado), Estado.Activo))
                 estudiantes.Estado = Enum.GetName(typeof(Estado), Estado.Inactivo);
 
             await _context.SaveChangesAsync();
